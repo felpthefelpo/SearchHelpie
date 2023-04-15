@@ -50,20 +50,39 @@ for i in range(len(ultimas_buscas)):
     botao_busca.pack(side=tk.TOP)
     botoes_buscas.append(botao_busca)
 
+def sair():
+    """Cria o botão para sair do app"""
+    janela.destroy()
+    
+def exibir_informacoes():
+    nova_janela = tk.Toplevel(janela)
+    nova_janela.title("Informações")
+    nova_janela.geometry("300x200")
+    rotulo_versao = tk.Label(nova_janela, text="Versão: Alpha 1.0")
+    rotulo_versao.pack()
+    rotulo_desenvolvedor = tk.Label(nova_janela, text="Desenvolvido por: Felipe Andrade")
+    rotulo_desenvolvedor.pack()
+    rotulo_endereco = tk.Label(nova_janela, text="Endereço: Planeta terra :)")
+    rotulo_endereco.pack()
+
 # Cria a janela principal
 janela = tk.Tk()
 janela.title("SearchHelpie :)")
 
 # Cria os widgets da interface gráfica
 
+botao_reset = tk.Button(janela, text="Reset", command=reset, bd=4)
+botao_reset.pack(side=tk.RIGHT)
 rotulo_link = tk.Label(janela, text="")
 rotulo_link.pack(side=tk.TOP)
 rotulo_pergunta = tk.Label(janela, text="Em que posso te ajudar?")
 rotulo_pergunta.pack(side=tk.TOP)
 campo_pergunta = tk.Entry(janela, width=50)
 campo_pergunta.pack(side=tk.TOP)
-botao_reset = tk.Button(janela, text="Reset", command=reset, bd=4)
-botao_reset.pack(side=tk.RIGHT)
+botao_sair = tk.Button(janela, text="Sair", command=sair, bd=4)
+botao_sair.pack(side=tk.RIGHT)
+botao_informacoes = tk.Button(janela, text="Informações", command=exibir_informacoes, bd=4)
+botao_informacoes.pack(side=tk.LEFT)
 botao_pesquisar = tk.Button(janela, text="Pesquisar", command=obter_resposta, bd=4)
 botao_pesquisar.pack(side=tk.TOP)
 rotulo_ultimas_buscas = tk.Label(janela, text="Últimas buscas:")
