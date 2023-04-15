@@ -28,7 +28,7 @@ def abrir_link():
 
 # Cria a janela principal
 janela = tk.Tk()
-janela.title("Automação de perguntas e respostas do Google")
+janela.title("SearchHelpie :)")
 
 # Cria os widgets da interface gráfica
 rotulo_link = tk.Label(janela, text="")
