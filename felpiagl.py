@@ -2,13 +2,17 @@ import tkinter as tk
 from googlesearch import search
 import webbrowser
 
+ultimas_buscas = []
+botoes_buscas = []
+links_buscas = []
+
 def search_google(query):
     """Pesquisa no Google a resposta para a pergunta"""
     global link_resposta
     try:
         link_resposta = next(search(query, num_results=1))
     except StopIteration:
-        link_resposta = "Não foi possível encontrar uma resposta para a pergunta."
+        link_resposta = "Não foi possível encontrar um resultado."
     return link_resposta
 
 
@@ -17,10 +21,18 @@ def obter_resposta():
     pergunta = campo_pergunta.get()
     resposta = search_google(pergunta)
     rotulo_link.config(text=link_resposta) #atualiza o rótulo com o link
-    campo_resposta.config(state='normal')
-    campo_resposta.delete('1.0', tk.END)
-    campo_resposta.insert(tk.END, resposta)
-    campo_resposta.config(state='disabled')
+    if len(ultimas_buscas) == 3:
+        ultimas_buscas.pop(0) #remove a busca mais antiga
+        ultimas_buscas.append(resposta) #adiciona uma nova busca
+        links_buscas.pop(0)
+        links_buscas.append(link_resposta)
+        exibir_ultimas_buscas()
+    else:
+        ultimas_buscas.append(resposta)
+        links_buscas.append(link_resposta)
+        botao_busca = tk.Button(janela, text=resposta, command=lambda: webbrowser.open(link_resposta))
+        botao_busca.pack(side=tk.TOP)
+        botoes_buscas.append(botao_busca)
 
 def abrir_link():
     """Abre o link no navegador padrão do sistema"""
@@ -30,9 +42,18 @@ def abrir_link():
 def reset():
     """Limpa o conteúdo do campo de pergunta e do campo de resposta"""
     campo_pergunta.delete(0, tk.END)
-    campo_resposta.config(state='normal')
-    campo_resposta.delete('1.0', tk.END)
-    campo_resposta.config(state='disabled')
+    rotulo_link.config(text="")
+    exibir_ultimas_buscas()
+
+def exibir_ultimas_buscas():
+    """Exibie as ultimas três buscas efetuadas"""
+for botao in botoes_buscas:
+    botao.pack_forget()
+    botoes_buscas.clear()
+for i in range(len(ultimas_buscas)):
+    botao_busca = tk.Button(text=ultimas_buscas[i], command=lambda i=i: webbrowser.open(links_buscas[i]))
+    botao_busca.pack(side=tk.TOP)
+    botoes_buscas.append(botao_busca)
 
 # Cria a janela principal
 janela = tk.Tk()
@@ -52,10 +73,8 @@ campo_pergunta = tk.Entry(janela, width=50)
 campo_pergunta.pack(side=tk.TOP)
 botao_pesquisar = tk.Button(janela, text="Pesquisar", command=obter_resposta)
 botao_pesquisar.pack(side=tk.TOP)
-rotulo_resposta = tk.Label(janela, text="Resultado da busca:")
-rotulo_resposta.pack(side=tk.TOP)
-campo_resposta = tk.Text(janela, width=50, height=10, state='disabled')
-campo_resposta.pack(side=tk.TOP)
+rotulo_ultimas_buscas = tk.Label(janela, text="Últimas buscas:")
+rotulo_ultimas_buscas.pack(side=tk.TOP)
 
 # Inicia o loop principal da janela
 janela.mainloop()
