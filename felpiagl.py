@@ -15,17 +15,27 @@ def obter_resposta():
     """Obtém a resposta da pesquisa do Google e exibe-a no painel de resposta"""
     pergunta = campo_pergunta.get()
     resposta = search_google(pergunta)
-    webbrowser.open(resposta) # abre o link no navegador padrão do sistema
+    rotulo_link.config(text=resposta) #atualiza o rótulo com o link
     campo_resposta.config(state='normal')
     campo_resposta.delete('1.0', tk.END)
-    campo_resposta.insert(tk.END, resposta)
+    campo_resposta.insert(tk.END, "Clique no link acima para abrir no navegador.")
     campo_resposta.config(state='disabled')
+
+def abrir_link():
+    """Abre o link no navegador padrão do sistema"""
+    resposta = rotulo_link.cget("text")
+    webbrowser.open(resposta)
 
 # Cria a janela principal
 janela = tk.Tk()
 janela.title("Automação de perguntas e respostas do Google")
 
 # Cria os widgets da interface gráfica
+rotulo_link = tk.Label(janela, text="")
+botao_abrir_link = tk.Button(janela, text="Abrir link", command=abrir_link)
+botao_abrir_link.pack(side=tk.TOP)
+rotulo_link.pack(side=tk.TOP)
+
 rotulo_pergunta = tk.Label(janela, text="Pergunta:")
 rotulo_pergunta.pack(side=tk.TOP)
 campo_pergunta = tk.Entry(janela, width=50)
