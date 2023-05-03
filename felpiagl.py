@@ -3,18 +3,22 @@ from googlesearch import search
 import webbrowser
 
 ultimas_buscas = []
+ultimas_buscas_dict = {}
 botoes_buscas = []
 links_buscas = []
 
 def search_google(query):
     """Pesquisa no Google a resposta para a pergunta"""
     global link_resposta
-    try:
-        link_resposta = next(search(query, num_results=1))
-    except StopIteration:
-        link_resposta = "Não foi possível encontrar um resultado."
+    if query in ultimas_buscas_dict:
+        link_resposta = ultimas_buscas_dict[query]
+    else:
+        try:
+            link_resposta = next(search(query, num_results=1))
+            ultimas_buscas_dict[query] = link_resposta
+        except StopIteration:
+            link_resposta = "Não foi possível encontrar um resultado."
     return link_resposta
-
 
 def obter_resposta():
     """Obtém a resposta da pesquisa do Google e exibe o link com a fonte da pesquisa"""
@@ -46,7 +50,9 @@ for botao in botoes_buscas:
     botao.pack_forget()
     botoes_buscas.clear()
 for i in range(len(ultimas_buscas)):
-    botao_busca = tk.Button(text=ultimas_buscas[i], command=lambda i=i: webbrowser.open(links_buscas[i]))
+    pergunta = ultimas_buscas[i]
+    link = ultimas_buscas_dict.get(pergunta, "")
+    botao_busca = tk.Button(text=ultimas_buscas[i], command=lambda i=i: webbrowser.open(link))
     botao_busca.pack(side=tk.TOP)
     botoes_buscas.append(botao_busca)
 
